@@ -1,5 +1,5 @@
 //
-//  WebSocketClient.swift
+//  RTPTWebSocketClient.swift
 //  RealTimePriceTracker
 //
 //  Created by Ashish Baghel on 25/11/2025.
@@ -8,9 +8,9 @@
 import Foundation
 import Combine
 
-class WebSocketClient: ObservableObject {
+class RTPTWebSocketClient: ObservableObject {
     private var webSocketTask: URLSessionWebSocketTask?
-    private let messagePublisher = PassthroughSubject<String, Never>()
+    let messagePublisher = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
   
     

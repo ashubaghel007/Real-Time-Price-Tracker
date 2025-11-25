@@ -10,10 +10,14 @@ import Foundation
 struct StockSymbol: Identifiable, Equatable, Hashable {
     let id = UUID()
     let symbol: String
-    var price: Double
-    var previousPrice: Double?
+    let price: Double
+    let previousPrice: Double
 
-    var change: Double { price - (previousPrice ?? price) }
+    var change: Double { price - previousPrice }
     var isUp: Bool { change > 0 }
     var isDown: Bool { change < 0 }
+
+    func updated(newPrice: Double) -> StockSymbol {
+        StockSymbol(symbol: symbol, price: newPrice, previousPrice: price)
+    }
 }
