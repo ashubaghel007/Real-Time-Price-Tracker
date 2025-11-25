@@ -11,6 +11,7 @@ import Combine
 class RTPTWebSocketClient: ObservableObject {
     private var webSocketTask: URLSessionWebSocketTask?
     let messagePublisher = PassthroughSubject<String, Never>()
+    let connectionStatePublisher = PassthroughSubject<Bool, Never>()
     private var cancellables = Set<AnyCancellable>()
   
     
@@ -19,6 +20,7 @@ class RTPTWebSocketClient: ObservableObject {
               let wssURL = RTPTConstants.wssURL else { return }
         webSocketTask = URLSession.shared.webSocketTask(with: wssURL)
         webSocketTask?.resume()
+        connectionStatePublisher.send(true)
         receive()
     }
     
@@ -36,6 +38,7 @@ class RTPTWebSocketClient: ObservableObject {
             switch result {
             case .failure(let error):
                 print("Receive error: \(error)")
+                self?.connectionStatePublisher.send(false)
             case .success(let message):
                 switch message {
                 case .string(let text):
@@ -53,5 +56,6 @@ class RTPTWebSocketClient: ObservableObject {
     
     func disconnect() {
         webSocketTask?.cancel(with: .goingAway, reason: nil)
+        connectionStatePublisher.send(false)
     }
 }

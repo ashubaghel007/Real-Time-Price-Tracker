@@ -9,8 +9,7 @@ import Foundation
 import Combine
 
 final class RTPTPriceTrackerViewModel: ObservableObject {
-    @Published var symbols: [StockSymbol] = []
-    @Published var isRunning = false
+    @Published private(set) var state = RTPTFeedState()
 
     private let networkClient: RTPTWebSocketClient
     private var timerCancellable: AnyCancellable?
@@ -18,7 +17,7 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
     private var symbolList: [String] = [String]()
 
     // MARK: - Init
-    init(networkClient: RTPTWebSocketClient,
+    init(networkClient: RTPTWebSocketClient = RTPTWebSocketClient(),
          symbolList: [String] = RTPTConstants.symbolList) {
         self.networkClient = networkClient
         self.symbolList = symbolList
@@ -28,7 +27,7 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
 
     // MARK: - Setup
     private func setupInitialStockSymbolList() {
-        symbols = symbolList.map {
+        state.symbols = symbolList.map {
             StockSymbol(symbol: $0,
                         price: Double.random(in: 100...500),
                         previousPrice: 0)
@@ -40,12 +39,18 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
         networkClient.messagePublisher
             .sink { [weak self] text in self?.applyUpdate(text) }
             .store(in: &cancellables)
+        
+        networkClient.connectionStatePublisher
+            .sink { [weak self] ok in
+                self?.state.isConnected = ok
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Feed Control
     func toggleFeed() {
-        isRunning ? stopFeed() : startFeed()
-        isRunning.toggle()
+        state.isRunning ? stopFeed() : startFeed()
+        state.isRunning.toggle()
     }
 
     private func startFeed() {
@@ -65,7 +70,7 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
     }
 
     private func sendRandomPriceUpdates() {
-        for symbol in symbols {
+        for symbol in state.symbols {
             let newPrice = Double.random(in: 100...500)
             networkClient.send("\(symbol.symbol):\(newPrice)")
         }
@@ -81,13 +86,13 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
 
         let name = String(parts[0])
 
-        guard let index = symbols.firstIndex(where: { $0.symbol == name }) else { return }
+        guard let index = state.symbols.firstIndex(where: { $0.symbol == name }) else { return }
 
-        symbols[index] = symbols[index].updated(newPrice: newPrice)
+        state.symbols[index] = state.symbols[index].updated(newPrice: newPrice)
         sortList()
     }
 
     private func sortList() {
-        symbols.sort { $0.price > $1.price }
+        state.symbols.sort { $0.price > $1.price }
     }
 }
