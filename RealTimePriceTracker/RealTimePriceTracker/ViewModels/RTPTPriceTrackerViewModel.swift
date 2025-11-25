@@ -15,22 +15,19 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
     private let networkClient: RTPTWebSocketClient
     private var timerCancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
-
-    private let symbolList = [
-        "AAPL","GOOG","AMZN","MSFT","TSLA","NVDA","META","NFLX","ADBE","INTC",
-        "ORCL","IBM","AMD","BABA","UBER","LYFT","SHOP","CRM","PYPL","SQ",
-        "KO","PEP","V","MA","DIS"
-    ]
+    private var symbolList: [String] = [String]()
 
     // MARK: - Init
-    init(networkClient: RTPTWebSocketClient) {
+    init(networkClient: RTPTWebSocketClient,
+         symbolList: [String] = RTPTConstants.symbolList) {
         self.networkClient = networkClient
-        setupInitialSymbols()
+        self.symbolList = symbolList
+        setupInitialStockSymbolList()
         observeIncomingUpdates()
     }
 
     // MARK: - Setup
-    private func setupInitialSymbols() {
+    private func setupInitialStockSymbolList() {
         symbols = symbolList.map {
             StockSymbol(symbol: $0,
                         price: Double.random(in: 100...500),
