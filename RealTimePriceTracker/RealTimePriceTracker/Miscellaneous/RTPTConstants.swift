@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+struct RTPTConstants {
+    static let wssURL = URL(string: "wss://ws.postman-echo.com/raw")
+}
