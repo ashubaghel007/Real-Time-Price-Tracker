@@ -11,7 +11,7 @@ import SwiftUI
 struct RealTimePriceTrackerApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RTPTStocksFeedView()
         }
     }
 }
