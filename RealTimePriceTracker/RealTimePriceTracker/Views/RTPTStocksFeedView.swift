@@ -3,22 +3,15 @@ import SwiftUI
 struct RTPTStocksFeedView: View {
     @StateObject var viewModel: RTPTPriceTrackerViewModel = RTPTPriceTrackerViewModel()
     @Environment(\.colorScheme) var colorScheme
-    
+
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $viewModel.navigationPath) {
             VStack {
                 List(viewModel.state.symbols) { item in
-                    NavigationLink {
-                        RTPTSymbolDetailScreen(
-                            viewModel: SymbolDetailViewModel(
-                                symbol: item,
-                                parentViewModel: viewModel
-                            )
-                        )
-                    } label: {
+                    NavigationLink(value: item) {
                         RTPTFeedRow(model: item)
                     }
-                    .listRowBackground(colorScheme == .dark ? Color.black.opacity(0.2) : Color.white)
+                    .listRowBackground(viewModel.isDarkMode ? Color.black.opacity(0.2) : Color.white)
                 }
             }
             .navigationTitle("Stocks Feed")
@@ -26,20 +19,42 @@ struct RTPTStocksFeedView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Text(viewModel.state.isConnected ? "🟢" : "🔴")
                         .font(.largeTitle)
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                        .foregroundColor(viewModel.isDarkMode ? .white : .black)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(viewModel.state.isRunning ? "Stop" : "Start") {
                         viewModel.toggleFeed()
                     }
-                    .foregroundColor(colorScheme == .dark ? .white : .blue)
+                    .foregroundColor(viewModel.isDarkMode ? .white : .blue)
                 }
             }
-            .background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
+            .background(viewModel.isDarkMode ? Color.black : Color(.systemGroupedBackground))
+            .navigationDestination(for: StockSymbol.self) { symbol in
+                RTPTSymbolDetailScreen(
+                    viewModel: SymbolDetailViewModel(symbol: symbol, parentViewModel: viewModel)
+                )
+            }
+            .onOpenURL { url in
+                handleDeepLink(url)
+            }
         }
-        .preferredColorScheme(viewModel.isDarkMode ? .dark : .light) // we can also plug this theme with UI to update as per user choice
+        .preferredColorScheme(viewModel.isDarkMode ? .dark : .light)
+    }
+
+    // MARK: - Deep Link Handling
+    private func handleDeepLink(_ url: URL) {
+        // Expecting format: stocks://symbol/AAPL
+        guard url.scheme == "stocks",
+              url.host == "symbol",
+              let symbolString = url.pathComponents.dropFirst().first,
+              let symbol = viewModel.state.symbols.first(where: { $0.symbol == symbolString })
+        else { return }
+
+        // Navigate to the symbol details
+        viewModel.navigationPath.append(symbol)
     }
 }
+
 
 struct RTPTFeedRow: View {
     let model: StockSymbol

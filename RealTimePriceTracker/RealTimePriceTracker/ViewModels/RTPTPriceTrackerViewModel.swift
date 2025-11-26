@@ -10,6 +10,7 @@ import Combine
 
 final class RTPTPriceTrackerViewModel: ObservableObject {
     @Published private(set) var state = RTPTFeedState()
+    @Published var navigationPath: [StockSymbol] = [] // For NavigationStack
 
     private let networkClient: RTPTWebSocketClient
     private var timerCancellable: AnyCancellable?
