@@ -15,6 +15,7 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
     private var timerCancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
     private var symbolList: [String] = [String]()
+    var isDarkMode: Bool = true 
 
     // MARK: - Init
     init(networkClient: RTPTWebSocketClient = RTPTWebSocketClient(),
