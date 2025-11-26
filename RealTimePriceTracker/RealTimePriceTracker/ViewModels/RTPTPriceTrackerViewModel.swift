@@ -37,10 +37,14 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
 
     private func observeIncomingUpdates() {
         networkClient.messagePublisher
-            .sink { [weak self] text in self?.applyUpdate(text) }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] text in
+                self?.applyUpdate(text)
+            }
             .store(in: &cancellables)
-        
+
         networkClient.connectionStatePublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] ok in
                 self?.state.isConnected = ok
             }
@@ -55,7 +59,6 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
 
     private func startFeed() {
         networkClient.connect()
-
         timerCancellable = Timer.publish(every: 2, on: .main, in: .common)
             .autoconnect()
             .sink {[weak self] _ in

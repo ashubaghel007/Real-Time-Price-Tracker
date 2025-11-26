@@ -9,5 +9,5 @@ import Foundation
 struct RTPTFeedState {
     var symbols: [StockSymbol] = []
     var isConnected: Bool = false
-    var isRunning: Bool = true
+    var isRunning: Bool = false
 }

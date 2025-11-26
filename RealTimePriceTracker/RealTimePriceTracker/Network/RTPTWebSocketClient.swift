@@ -56,6 +56,7 @@ class RTPTWebSocketClient: ObservableObject {
     
     func disconnect() {
         webSocketTask?.cancel(with: .goingAway, reason: nil)
+        webSocketTask = nil
         connectionStatePublisher.send(false)
     }
 }
