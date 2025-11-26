@@ -37,6 +37,36 @@
 			);
 			target = 468C002A2ED63F87008DCBC6 /* RealTimePriceTracker */;
 		};
+		468C01702ED7A788008DCBC6 /* Exceptions for "RealTimePriceTracker" folder in "RealTimePriceTrackerTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Miscellaneous/RTPTConstants.swift,
+				Miscellaneous/RTPTFeedState.swift,
+				Models/StockSymbol.swift,
+				Network/RTPTWebSocketClient.swift,
+				RealTimePriceTrackerApp.swift,
+				ViewModels/RTPTPriceTrackerViewModel.swift,
+				ViewModels/RTPTSymbolDetailViewModel.swift,
+				Views/RTPTStocksFeedView.swift,
+				Views/RTPTSymbolDetailScreen.swift,
+			);
+			target = 468C00372ED63F88008DCBC6 /* RealTimePriceTrackerTests */;
+		};
+		468C01712ED7A788008DCBC6 /* Exceptions for "RealTimePriceTracker" folder in "RealTimePriceTrackerUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Miscellaneous/RTPTConstants.swift,
+				Miscellaneous/RTPTFeedState.swift,
+				Models/StockSymbol.swift,
+				Network/RTPTWebSocketClient.swift,
+				RealTimePriceTrackerApp.swift,
+				ViewModels/RTPTPriceTrackerViewModel.swift,
+				ViewModels/RTPTSymbolDetailViewModel.swift,
+				Views/RTPTStocksFeedView.swift,
+				Views/RTPTSymbolDetailScreen.swift,
+			);
+			target = 468C00412ED63F88008DCBC6 /* RealTimePriceTrackerUITests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +74,8 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				468C016A2ED79E5D008DCBC6 /* Exceptions for "RealTimePriceTracker" folder in "RealTimePriceTracker" target */,
+				468C01702ED7A788008DCBC6 /* Exceptions for "RealTimePriceTracker" folder in "RealTimePriceTrackerTests" target */,
+				468C01712ED7A788008DCBC6 /* Exceptions for "RealTimePriceTracker" folder in "RealTimePriceTrackerUITests" target */,
 			);
 			path = RealTimePriceTracker;
 			sourceTree = "<group>";

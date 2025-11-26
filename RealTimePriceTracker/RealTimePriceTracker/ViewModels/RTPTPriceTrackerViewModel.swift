@@ -9,17 +9,17 @@ import Foundation
 import Combine
 
 final class RTPTPriceTrackerViewModel: ObservableObject {
-    @Published private(set) var state = RTPTFeedState()
+    @Published var state = RTPTFeedState()
     @Published var navigationPath: [StockSymbol] = [] // For NavigationStack
 
-    private let networkClient: RTPTWebSocketClient
+    private let networkClient: RTPTWebSocketClientProtocol
     private var timerCancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
     private var symbolList: [String] = [String]()
     var isDarkMode: Bool = true 
 
     // MARK: - Init
-    init(networkClient: RTPTWebSocketClient = RTPTWebSocketClient(),
+    init(networkClient: RTPTWebSocketClientProtocol = RTPTWebSocketClient(),
          symbolList: [String] = RTPTConstants.symbolList) {
         self.networkClient = networkClient
         self.symbolList = symbolList
@@ -74,7 +74,7 @@ final class RTPTPriceTrackerViewModel: ObservableObject {
         networkClient.disconnect()
     }
 
-    private func sendRandomPriceUpdates() {
+     func sendRandomPriceUpdates() {
         for symbol in state.symbols {
             let newPrice = Double.random(in: 100...500)
             networkClient.send("\(symbol.symbol):\(newPrice)")

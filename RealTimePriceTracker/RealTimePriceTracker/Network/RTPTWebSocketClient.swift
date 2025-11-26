@@ -8,10 +8,19 @@
 import Foundation
 import Combine
 
-class RTPTWebSocketClient: ObservableObject {
+protocol RTPTWebSocketClientProtocol: AnyObject {
+    var messagePublisher: PassthroughSubject<String, Never> { get }
+    var connectionStatePublisher: PassthroughSubject<Bool, Never> { get }
+    
+    func connect()
+    func disconnect()
+    func send(_ message: String)
+}
+
+class RTPTWebSocketClient: ObservableObject, RTPTWebSocketClientProtocol {
     private var webSocketTask: URLSessionWebSocketTask?
-    let messagePublisher = PassthroughSubject<String, Never>()
-    let connectionStatePublisher = PassthroughSubject<Bool, Never>()
+    var messagePublisher = PassthroughSubject<String, Never>()
+    var connectionStatePublisher = PassthroughSubject<Bool, Never>()
     private var cancellables = Set<AnyCancellable>()
   
     
