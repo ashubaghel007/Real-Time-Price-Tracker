@@ -8,15 +8,27 @@
 import Foundation
 import Combine
 
+// MARK: - WebSocket Client Protocol
+/// Protocol defining the basic interface for a WebSocket client.
+/// Enables mocking/testing by decoupling the ViewModel from the real WebSocket implementation.
 protocol RTPTWebSocketClientProtocol: AnyObject {
+    /// Publishes incoming text messages from the WebSocket
     var messagePublisher: PassthroughSubject<String, Never> { get }
+    
+    /// Publishes the connection state (true = connected, false = disconnected)
     var connectionStatePublisher: PassthroughSubject<Bool, Never> { get }
     
+    /// Connects to the WebSocket server
     func connect()
+    
+    /// Disconnects from the WebSocket server
     func disconnect()
+    
+    /// Sends a string message to the WebSocket server
     func send(_ message: String)
 }
 
+// MARK: - WebSocket Client
 class RTPTWebSocketClient: ObservableObject, RTPTWebSocketClientProtocol {
     private var webSocketTask: URLSessionWebSocketTask?
     var messagePublisher = PassthroughSubject<String, Never>()
@@ -42,6 +54,8 @@ class RTPTWebSocketClient: ObservableObject, RTPTWebSocketClientProtocol {
         }
     }
     
+    // MARK: - Receive Messages
+    /// Continuously listens for incoming WebSocket messages.
     private func receive() {
         webSocketTask?.receive { [weak self] result in
             switch result {
