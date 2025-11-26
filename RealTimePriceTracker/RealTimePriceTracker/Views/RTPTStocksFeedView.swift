@@ -1,3 +1,9 @@
+//
+//  RTPTStocksFeedView.swift
+//  RTPTStocksFeedView
+//
+//  Created by Ashish Baghel on 26/11/2025.
+//
 import SwiftUI
 
 struct RTPTStocksFeedView: View {
